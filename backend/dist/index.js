@@ -1,39 +1,61 @@
 const express = require("express");
-const { PrismaClient } = require("@prisma/client");
-
+const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcrypt');  // For hashing passwords
+const cors =  require("cors")
 const app = express();
-const prisma = new PrismaClient();  // Corrected: instantiate PrismaClient only once
+const prisma = new PrismaClient();
+app.use(express.json());
+app.use(cors())
+app.post("/", async function(req, res) {
+    const { username, name, password,phone } = req.body;  // Destructure to get the values from the request body
 
-app.use(express.json());  // Middleware to parse JSON request bodies
+    if (!username || !name || !password) {
+        return res.status(400).send({
+            error: 'Please provide username, name, and password.'
+        });
+    }
 
-// POST endpoint to create a user
-app.post("/", async function (req, res) {
-  const { username } = req.body;
+    try {
+        const existingUser = await prisma.user.findFirst({
+            where: {
+                username: username  // Corrected the query to use `where` and `username` correctly
+            }
+        });
 
-  // Ensure username is provided
-  if (!username) {
-    return res.status(400).send("Username is required");
-  }
+        if (existingUser) {
+            return res.status(400).send({
+                msg: "User already exists."
+            });
+        }
 
-  try {
-    const user = await prisma.user.create({
-      data: {
-        username: username,
-      },
-      select: {
-        username: true, // Only select the 'username' field
-      },
-    });
+        // Hash the password before inserting it
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Send the created user back as the response
-    res.send(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Server error");
-  }
+        const insert = await prisma.user.create({
+            data: {
+                username: username,
+                name: name,
+                phone:phone,
+                password: hashedPassword  // Use the hashed password
+            },
+            select: {
+                username: true,
+                name: true
+            }
+        });
+
+        res.status(201).send({
+            message: 'User created successfully!',
+            user: insert
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({
+            error: 'An error occurred while creating the user.'
+        });
+    }
 });
 
-// Start the Express server
 app.listen(3000, () => {
-  console.log("Server is running on http://localhost:3000");
+    console.log("Server listening on port 3000");
 });

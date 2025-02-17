@@ -22,9 +22,9 @@ Experience the art of fine dining in a warm and welcoming atmosphere. Our menu f
             <div className="flex items-center justify-center">
               <div className=" text-2xl font-serif flex flex-col items-center justify-center rounded-lg bg-white text-center w-fit px-4 my-4">
               
-              <div className="flex flex-row justify-center my-2 "><h3><pre>Don't have an account? </pre> </h3><button className="bg-slate-300 px-2 rounded-lg" onClick={Signin_handler}> Sign Up</button>
+              <div className="flex flex-row justify-center my-2 "><h3><pre>Don't have an account? </pre> </h3><button className="bg-slate-300 px-2 rounded-lg" onClick={Signup_handler}> Sign Up</button>
               </div>
-              <div className="flex flex-row justify-center my-2"><h3><pre>Already have an account? </pre> </h3><button className="bg-slate-300 px-2 rounded-lg" onClick={Signup_handler}>Sign In</button></div>
+              <div className="flex flex-row justify-center my-2"><h3><pre>Already have an account? </pre> </h3><button className="bg-slate-300 px-2 rounded-lg" onClick={Signin_handler}>Sign In</button></div>
             </div>
             </div>
            
