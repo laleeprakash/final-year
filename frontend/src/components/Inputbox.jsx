@@ -1,10 +1,11 @@
-export function Inputbox({ label, placeholder, onChange, id, type = "text" }) {
+export function Inputbox({ label, placeholder, onChange, id, type = "text",accept}) {
   return (
     <div className="p-1">
       <div className="p-1 text-sm font-medium text-left">
         <label htmlFor={id} className="font-semibold">{label}</label>
       </div>
       <input
+      accept={accept}
         id={id}
         required
         onChange={onChange}
